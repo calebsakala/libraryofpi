@@ -504,8 +504,7 @@ function App() {
                       </p>
                       <p>
                         <strong>Probability Calculation:</strong> When a sequence isn't found, we calculate the probability 
-                        that it would have been discovered in the first billion digits. This uses advanced mathematical 
-                        techniques including <strong>finite state automata</strong> and <strong>Markov chain analysis</strong>. 
+                        that it would have been discovered in the first billion digits. This uses <strong>finite state automata</strong> and <strong>Markov chain analysis</strong>. 
                         We build a state machine that tracks partial matches of your pattern, then use matrix exponentiation 
                         to compute the probability distribution after processing N digits. The calculation assumes Pi's digits 
                         are statistically random (which they appear to be), where each digit 0-9 has equal probability. 

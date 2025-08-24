@@ -451,8 +451,8 @@ function App() {
                       <p>
                         I'm <strong>Caleb Sakala</strong>, and I created this site after being inspired by a fascinating video about Pi. 
                         The concept that everything that can ever be said or written is contained within Pi's infinite digits 
-                        captivated me. This mathematical constant holds every possible combination of numbers, which means 
-                        every book, every poem, every conversation - including this very text - exists somewhere in Pi's endless sequence.
+                        was - and is - so captivating to me. Just the thought that this one mathematical constant holds every possible combination of numbers, which means 
+                        every book, every poem, every conversation - including this very text - I don't know how you can hear that and not be wowed. I created this site to wow people with Pi.
                       </p>
                     </div>
                     
@@ -460,7 +460,7 @@ function App() {
                       <h3>Open Source & Free</h3>
                       <p>
                         Library of Pi is completely <strong>free and open source</strong>. You can explore the code, contribute, 
-                        or create your own version on GitHub.
+                        or create your own version on GitHub. Please star the repo if you find it interesting!
                       </p>
                       <a href="https://github.com/calebsakala/libraryofpi" 
                          target="_blank" 
@@ -492,15 +492,24 @@ function App() {
                     <div className="about-section">
                       <h3>Technical Details</h3>
                       <p>
-                        This site searches through over <strong>1 billion digits of Pi</strong> using the pilookup.com API. 
+                        <strong>Overview:</strong>  This site searches through <strong>1 billion digits of Pi</strong> using the pilookup.com API. 
                         The visualization shows a mathematical spirograph pattern based on Pi's ratio, creating beautiful 
                         geometric art as it traces through the infinite sequence.
                       </p>
                       <p>
-                        <strong>Letter Mapping Algorithm:</strong> Words are converted to numbers using a simple mapping system where 
+                        <strong>Number-letter Mapping:</strong> To map letters to numbers, I use a simple mapping system where 
                         A=01, B=02, C=03... Z=26. Each letter becomes a two-digit number, so "HELLO" becomes "0805121215". 
                         This numeric sequence is then searched within Pi's digits. The reverse process converts Pi's digits 
                         back to letters, revealing the hidden words that exist within the mathematical constant.
+                      </p>
+                      <p>
+                        <strong>Probability Calculation:</strong> When a sequence isn't found, we calculate the probability 
+                        that it would have been discovered in the first billion digits. This uses advanced mathematical 
+                        techniques including <strong>finite state automata</strong> and <strong>Markov chain analysis</strong>. 
+                        We build a state machine that tracks partial matches of your pattern, then use matrix exponentiation 
+                        to compute the probability distribution after processing N digits. The calculation assumes Pi's digits 
+                        are statistically random (which they appear to be), where each digit 0-9 has equal probability. 
+                        This gives us a scientifically grounded estimate of how "surprising" it is that your phrase wasn't found.
                       </p>
                     </div>
                   </div>

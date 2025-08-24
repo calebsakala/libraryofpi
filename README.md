@@ -1,226 +1,201 @@
-# Infinite Pi Phrase Search Engine
+# 🥧 Library of Pi
 
-A full-stack web application that allows users to search for any English phrase within the infinite digits of Pi. The system converts phrases to numeric patterns and efficiently searches through dynamically generated Pi digits without storing the entire sequence.
+> *"Everything that can ever be said or written is contained within Pi's infinite digits"*
 
-## 🎯 Features
+A mystical, interactive web application that searches for words and phrases hidden within the infinite digits of Pi. Built with React, TypeScript, and mathematical wonder.
 
-- **Infinite Pi Search**: Find any English phrase in the digits of Pi
-- **Real-time Results**: Live search progress and streaming results
-- **Memory Efficient**: Generates Pi digits on-demand without storage
-- **High Performance**: C-based backend for optimal search speed
-- **Modern UI**: React + Vite frontend with responsive design
-- **Concurrent Searches**: Support for multiple simultaneous users
-- **Configurable Mapping**: Customizable letter-to-digit conversion
+## ✨ Features
 
-## 🏗️ Architecture
+- **🔍 Word Search**: Search for any (20 character) word or phrase within the first billion digits of Pi
+- **🎭 Beautiful Visualization**: Animated spirograph patterns based on Pi's mathematical properties
+- **📊 Probability Analysis**: Advanced mathematical calculations showing the likelihood of finding patterns
+- **🎵 Ambient Experience**: Subtle background music to enhance the cosmic exploration
+- **📱 Responsive Design**: Works seamlessly on desktop and mobile devices
+- **🌌 Cosmic Theme**: Mystical dark theme with golden accents and floating animations
 
-### Frontend (React + Vite + TypeScript)
-- **SearchInput**: Phrase input with validation
-- **ResultsDisplay**: Shows position and Pi digit context
-- **ProgressIndicator**: Real-time search status
-- **APIClient**: WebSocket/HTTP communication
+## 🚀 Live Demo
 
-### Backend (Python + C)
-- **TextMapper**: Converts phrases to numeric patterns
-- **PiGenerator**: Streaming Pi digit generation (C library)
-- **StreamingSearcher**: Efficient pattern search (KMP algorithm)
-- **APIHandler**: FastAPI REST/WebSocket endpoints
+Visit the live application: [Library of Pi](https://libraryofpi.com) 
 
-## 🚀 Quick Start
+## 🌐 Deployment
+
+This project is configured for easy deployment on Netlify:
+
+### Automatic Deployment
+1. **Connect your GitHub repository** to Netlify
+2. **Set build settings**:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+3. **Deploy automatically** on every push to main branch
+
+### Manual Deployment
+```bash
+# Build the project
+npm run build
+
+# Install Netlify CLI (if not already installed)
+npm install -g netlify-cli
+
+# Deploy to Netlify
+netlify deploy --prod --dir=dist
+```
+
+The `netlify.toml` file is already configured with:
+- Proper SPA redirects for React Router
+- Security headers
+- Performance optimizations
+- Build configurations
+
+## 🧮 How It Works
+
+### Letter-to-Number Mapping
+Words are converted to numbers using a simple mapping system:
+- A=01, B=02, C=03... Z=26
+- "HELLO" becomes "0805121215"
+- This numeric sequence is then searched within Pi's digits
+
+### Mathematical Search
+- Searches through over **1 billion digits of Pi** using the [pilookup.com API](https://pilookup.com)
+- Displays the exact position where your phrase appears
+- Shows surrounding context with both numeric and letter representations
+
+### Probability Calculation
+When a sequence isn't found, we calculate the probability using:
+- **Finite State Automata** to track partial pattern matches
+- **Markov Chain Analysis** for modeling the search process
+- **Matrix Exponentiation** for efficient probability calculations
+- Assumes Pi's digits are statistically random (which they appear to be)
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18 + TypeScript
+- **Styling**: Custom CSS with Tailwind CSS utilities
+- **Animations**: GSAP (GreenSock)
+- **UI Components**: Custom components with shadcn/ui base
+- **Build Tool**: Vite
+- **API**: pilookup.com for Pi digit searches
+
+## 🏗️ Project Structure
+
+```
+src/
+├── components/
+│   ├── ui/              # Base UI components
+│   └── PiVisualization/ # Mathematical visualization component
+├── App.tsx              # Main application component
+├── App.css              # Cosmic styling and animations
+└── main.tsx             # Application entry point
+```
+
+## 🎨 Design Philosophy
+
+The Library of Pi embraces a **cosmic, mystical aesthetic** that reflects the infinite nature of Pi:
+
+- **Dark cosmic background** with subtle gradients
+- **Golden color palette** (rgba(205, 193, 147)) for mathematical elegance
+- **Floating animations** and particle effects
+- **Typography**: Playfair Display for headings, Crimson Text for body
+- **Smooth transitions** and micro-interactions throughout
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 16+ and npm
-- Python 3.8+
-- GCC compiler and GMP library (for C modules)
+- Node.js 18+ 
+- npm or yarn
 
 ### Installation
 
-1. **Clone and setup**:
+1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd pi-universe
+   git clone https://github.com/calebsakala/libraryofpi.git
+   cd libraryofpi
    ```
 
-2. **Backend setup**:
+2. **Install dependencies**
    ```bash
-   cd backend
-   pip install -r requirements.txt
-   cd c_modules && make all  # Build C libraries
-   python run_tests.py --install  # Run tests
-   ```
-
-3. **Frontend setup**:
-   ```bash
-   cd frontend  # or root directory
    npm install
    ```
 
-### Running the Application
-
-1. **Start Backend**:
-   ```bash
-   cd backend
-   python src/api_handler.py
-   # Server runs on http://localhost:8000
-   ```
-
-2. **Start Frontend**:
+3. **Start development server**
    ```bash
    npm run dev
-   # Frontend runs on http://localhost:5173
    ```
 
-3. **Access Application**:
-   Open http://localhost:5173 in your browser
+4. **Open your browser**
+   ```
+   http://localhost:5173
+   ```
 
-## 📖 Usage Examples
+### Build for Production
 
-### Basic Search
-1. Enter any English phrase (e.g., "HELLO")
-2. Click "Search in Pi"
-3. View the position where the phrase first appears
-4. See surrounding Pi digits for context
-
-### Advanced Features
-- **Custom Mapping**: Define your own letter-to-number conversion
-- **Long Phrases**: Search for sentences or paragraphs
-- **Real-time Progress**: Watch the search progress live
-- **Multiple Searches**: Run concurrent searches
-
-## 🧪 Testing
-
-The project uses comprehensive Test-Driven Development (TDD):
-
-### Backend Tests
-```bash
-cd backend
-python run_tests.py                # All tests
-python run_tests.py unit          # Unit tests only
-python run_tests.py integration   # Integration tests
-python run_tests.py --coverage    # With coverage report
-```
-
-### Frontend Tests
-```bash
-npm test          # Run frontend tests
-npm run test:watch # Watch mode
-```
-
-## 🏎️ Performance
-
-- **Search Algorithm**: KMP (Knuth-Morris-Pratt) for O(n+m) complexity
-- **Memory Usage**: Constant memory, no Pi digit storage
-- **Typical Performance**:
-  - Single letters: < 5 seconds
-  - Short words: < 15 seconds
-  - Longer phrases: Variable (depends on position in Pi)
-
-## 🔧 Development
-
-### Project Structure
-```
-pi-universe/
-├── frontend/              # React + Vite application
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── services/      # API communication
-│   │   └── utils/         # Utility functions
-│   └── package.json
-├── backend/               # Python + C backend
-│   ├── src/               # Python modules
-│   ├── c_modules/         # High-performance C libraries
-│   ├── tests/             # Comprehensive test suite
-│   └── requirements.txt
-└── README.md
-```
-
-### API Endpoints
-
-#### Search for Phrase
-```http
-POST /search
-{
-  "phrase": "HELLO WORLD"
-}
-```
-
-#### WebSocket Real-time Search
-```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/search');
-ws.send(JSON.stringify({phrase: "HELLO"}));
-```
-
-### Building for Production
-
-#### Backend
-```bash
-cd backend
-pip install gunicorn
-gunicorn src.api_handler:app --workers 4 --bind 0.0.0.0:8000
-```
-
-#### Frontend
 ```bash
 npm run build
-npm run preview
 ```
 
-## 🔬 Technical Details
+## 🎭 Features in Detail
 
-### Pi Generation Algorithm
-- **Bailey–Borwein–Plouffe (BBP) Formula**: For arbitrary precision
-- **Spigot Algorithm**: Memory-efficient streaming generation
-- **GMP Library**: High-precision arithmetic in C
+### 🌟 Loading Experience
+- Animated loading screen with progress simulation
+- Cosmic ambiance preparation
+- One-time experience with session persistence
 
-### Search Algorithm
-- **KMP (Knuth-Morris-Pratt)**: Optimal string searching
-- **Streaming Processing**: Handles infinite sequences
-- **Partial Match Handling**: Correctly processes overlapping patterns
+### 🔍 Search Interface
+- Real-time input validation
+- Character limit (20 characters)
+- Smooth animations and feedback
+- Mobile-optimized input experience
 
-### Letter-to-Digit Mapping
-Default mapping: A=01, B=02, C=03, ..., Z=26
-- Case-insensitive conversion
-- Ignores spaces and punctuation
-- Configurable for alternative mappings
+### 📊 Result Display
+- **Success**: Beautiful card showing discovery details, position, and context
+- **Not Found**: Probability analysis with mathematical explanation
+- **Context Visualization**: Shows before/after sequences in both numbers and letters
 
-## 🚀 Deployment
+### 🎵 Audio Experience
+- Embedded YouTube player with ambient music
+- Subtle positioning and transparency
+- User-controllable playback
+- Auto-play after user interaction
 
-### Docker (Recommended)
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
-```
+## 🧠 The Mathematics
 
-### Manual Deployment
-1. Deploy backend to cloud service (AWS, GCP, etc.)
-2. Build and deploy frontend to CDN/static hosting
-3. Configure environment variables and scaling
+Pi contains every possible finite sequence of digits, which means:
+- Every book ever written exists somewhere in Pi
+- Every conversation, including this README
+- Every possible combination of letters and numbers
+- The challenge is finding them within computational limits
+
+Our search covers the first **1 billion digits**, giving us a substantial window into Pi's infinite sequence.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Write tests for new functionality
-4. Ensure all tests pass: `npm test && cd backend && python run_tests.py`
-5. Submit a pull request
+Contributions are welcome! Whether you want to:
+- Improve the mathematical algorithms
+- Enhance the visual design
+- Add new features
+- Fix bugs
+- Improve documentation
 
-### Development Guidelines
-- Follow TDD principles (write tests first)
-- Maintain high test coverage (>90%)
-- Use TypeScript for frontend type safety
-- Follow Python PEP 8 style guidelines
-- Document C code thoroughly
+Please feel free to open issues and pull requests.
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is open source and available under the [MIT License](LICENSE).
 
-## 🙏 Acknowledgments
+## 👨‍💻 About the Creator
 
-- **Pi Generation**: Based on Bailey–Borwein–Plouffe formula
-- **Search Algorithm**: Knuth-Morris-Pratt string matching
-- **Inspiration**: The fascinating mathematical properties of Pi
+**Caleb Sakala** - Inspired by the infinite beauty of mathematics and the wonder of Pi.
+
+### Connect with me:
+- 💼 **LinkedIn**: [linkedin.com/in/calebsakala](https://linkedin.com/in/calebsakala)
+- 🐦 **Twitter/X**: [@bytecaleb](https://x.com/bytecaleb)
+- 💻 **GitHub**: [@calebsakala](https://github.com/calebsakala)
 
 ---
 
-**Fun Fact**: Every possible finite sequence of digits appears somewhere in the infinite expansion of Pi (if Pi is a normal number, which is widely believed but not yet proven)!
+## 🌟 Star This Repository
+
+If you find this project interesting or useful, please consider giving it a star! It helps others discover the infinite beauty of Pi.
+
+---
+
+*"In the digits of Pi, every story has already been written, every equation already solved, every dream already dreamed. We're just archaeologists of the infinite, uncovering what was always there."*

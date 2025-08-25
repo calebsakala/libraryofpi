@@ -20,35 +20,6 @@ A mystical, interactive web application that searches for words and phrases hidd
 
 Visit the live application: [Library of Pi](https://libraryofpi.com) 
 
-## 🌐 Deployment
-
-This project is configured for easy deployment on Netlify:
-
-### Automatic Deployment
-1. **Connect your GitHub repository** to Netlify
-2. **Set build settings**:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-3. **Deploy automatically** on every push to main branch
-
-### Manual Deployment
-```bash
-# Build the project
-npm run build
-
-# Install Netlify CLI (if not already installed)
-npm install -g netlify-cli
-
-# Deploy to Netlify
-netlify deploy --prod --dir=dist
-```
-
-The `netlify.toml` file is already configured with:
-- Proper SPA redirects for React Router
-- Security headers
-- Performance optimizations
-- Build configurations
-
 ## 🧮 How It Works
 
 ### Letter-to-Number Mapping
@@ -203,3 +174,4 @@ If you find this project interesting or useful, please consider giving it a star
 
 
 *"In the digits of Pi, every story has already been written, every equation already solved, every dream already dreamed. We're just archaeologists of the infinite, uncovering what was always there."*
+

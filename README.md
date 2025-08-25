@@ -2,6 +2,9 @@
 
 > *"Everything that can ever be said or written is contained within Pi's infinite digits"*
 
+<img width="1896" height="929" alt="Screenshot 2025-08-24 230511" src="https://github.com/user-attachments/assets/239c46d2-66d0-45c2-a4bb-b9990c1051b9" />
+
+
 A mystical, interactive web application that searches for words and phrases hidden within the infinite digits of Pi. Built with React, TypeScript, and mathematical wonder.
 
 ## ✨ Features
@@ -197,5 +200,6 @@ This project is open source and available under the [MIT License](LICENSE).
 If you find this project interesting or useful, please consider giving it a star! It helps others discover the infinite beauty of Pi.
 
 ---
+
 
 *"In the digits of Pi, every story has already been written, every equation already solved, every dream already dreamed. We're just archaeologists of the infinite, uncovering what was always there."*

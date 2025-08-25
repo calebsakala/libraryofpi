@@ -160,9 +160,23 @@ function App() {
     }).join('')
   }
 
+  const handleInputChange = (value: string) => {
+    let cleanValue = value.slice(0, 20) // Always limit to 20 characters
+    
+    if (digitMode) {
+      // Digits mode: only allow numeric characters (0-9)
+      cleanValue = cleanValue.replace(/[^0-9]/g, '')
+    } else {
+      // Words mode: only allow letters (A-Z, a-z)
+      cleanValue = cleanValue.replace(/[^A-Za-z]/g, '')
+    }
+    
+    setPhrase(cleanValue)
+  }
+
   const searchPi = async () => {
     if (!phrase.trim()) {
-      setError(digitMode ? 'Please enter digits to search' : 'Please enter a word or phrase to search')
+      setError(digitMode ? 'Please enter numbers only (0-9)' : 'Please enter letters only (A-Z)')
       return
     }
 
@@ -190,7 +204,7 @@ function App() {
     try {
       const numericPattern = digitMode ? phrase : phraseToDigits(phrase)
       if (!numericPattern) {
-        setError(digitMode ? 'Please enter digits to search' : 'Your phrase must contain at least one letter')
+        setError(digitMode ? 'Please enter numbers only (0-9)' : 'Your phrase must contain at least one letter')
         setLoading(false)
         return
       }
@@ -694,9 +708,7 @@ function App() {
                                 type="text"
                                 value={phrase}
                                 onChange={(e) => {
-                                  // Remove spaces and limit to 20 characters
-                                  const cleanValue = e.target.value.replace(/\s/g, '').slice(0, 20)
-                                  setPhrase(cleanValue)
+                                  handleInputChange(e.target.value)
                                 }}
                                 placeholder={digitMode ? 'Enter numbers to search...' : 'Search for another phrase...'}
                                 className="cosmic-input"
@@ -764,9 +776,7 @@ function App() {
                                 type="text"
                                 value={phrase}
                                 onChange={(e) => {
-                                  // Remove spaces and limit to 20 characters
-                                  const cleanValue = e.target.value.replace(/\s/g, '').slice(0, 20)
-                                  setPhrase(cleanValue)
+                                  handleInputChange(e.target.value)
                                 }}
                                 placeholder={digitMode ? 'Enter numbers to search...' : 'Search for another phrase...'}
                                 className="cosmic-input"
@@ -819,9 +829,7 @@ function App() {
                           type="text"
                           value={phrase}
                           onChange={(e) => {
-                            // Remove spaces and limit to 20 characters
-                            const cleanValue = e.target.value.replace(/\s/g, '').slice(0, 20)
-                            setPhrase(cleanValue)
+                            handleInputChange(e.target.value)
                           }}
                           placeholder={digitMode ? 'Enter numbers to search...' : 'Enter a word or phrase...'}
                           className="cosmic-input"

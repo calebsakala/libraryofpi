@@ -12,6 +12,7 @@ interface SearchResult {
   position: number;
   snippet: string;
   found: boolean;
+  isDigitMode: boolean;
 }
 
 function App() {
@@ -25,6 +26,10 @@ function App() {
   })
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [showAbout, setShowAbout] = useState(false)
+
+  // Add states for digit search mode and deep search indicator
+  const [digitMode, setDigitMode] = useState(false)
+  const [isDeepSearching, setIsDeepSearching] = useState(false)
 
   const titleRef = useRef<HTMLHeadingElement>(null)
   const spiralRef = useRef<HTMLDivElement>(null)
@@ -77,7 +82,7 @@ function App() {
         console.log('Loading screen reset - reload page to see loading again')
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [])
@@ -124,15 +129,24 @@ function App() {
     return result
   }
 
-  const formatSnippetWithWords = (snippet: string) => {
+  const formatSnippetWithWords = (snippet: string, isDigitMode: boolean = false) => {
     const beforeMatch = snippet.split('[')[0].replace('...', '')
     const match = snippet.split('[')[1]?.split(']')[0] || ''
     const afterMatch = snippet.split(']')[1]?.replace('...', '') || ''
 
     return {
-      before: { numbers: beforeMatch, words: numbersToWords(beforeMatch) },
-      match: { numbers: match, words: numbersToWords(match) },
-      after: { numbers: afterMatch, words: numbersToWords(afterMatch) }
+      before: {
+        numbers: beforeMatch,
+        words: isDigitMode ? '' : numbersToWords(beforeMatch)
+      },
+      match: {
+        numbers: match,
+        words: isDigitMode ? '' : numbersToWords(match)
+      },
+      after: {
+        numbers: afterMatch,
+        words: isDigitMode ? '' : numbersToWords(afterMatch)
+      }
     }
   }
 
@@ -148,13 +162,14 @@ function App() {
 
   const searchPi = async () => {
     if (!phrase.trim()) {
-      setError('Please enter a word or phrase to search')
+      setError(digitMode ? 'Please enter digits to search' : 'Please enter a word or phrase to search')
       return
     }
 
     setLoading(true)
     setError('')
     setResult(null)
+    setIsDeepSearching(false)
 
     // Smooth scroll to top of result area if we're continuing from a result
     if (result) {
@@ -173,12 +188,14 @@ function App() {
     }
 
     try {
-      const numericPattern = phraseToDigits(phrase)
+      const numericPattern = digitMode ? phrase : phraseToDigits(phrase)
       if (!numericPattern) {
-        setError('Your phrase must contain at least one letter')
+        setError(digitMode ? 'Please enter digits to search' : 'Your phrase must contain at least one letter')
+        setLoading(false)
         return
       }
 
+      // Primary API call
       const response = await fetch(`https://pilookup.com/api/pi/search/?no=${numericPattern}`)
       const data = await response.json()
 
@@ -188,7 +205,8 @@ function App() {
           numeric_pattern: numericPattern,
           position: data.data.pos,
           snippet: `...${data.data.before}[${data.data.match}]${data.data.after}...`,
-          found: true
+          found: true,
+          isDigitMode: digitMode
         }
         setResult(newResult)
 
@@ -203,13 +221,56 @@ function App() {
           }
         }, 100)
       } else {
-        setResult({
-          phrase,
-          numeric_pattern: numericPattern,
-          position: -1,
-          snippet: 'Not found in the known digits of Pi',
-          found: false
-        })
+        // Deep search via backup API
+        setIsDeepSearching(true)
+        try {
+          const backupResponse = await fetch(`https://api.libraryofpi.com/search?no=${numericPattern}`)
+          const backupData = await backupResponse.json()
+          if (backupData.code === 0 && backupData.data && backupData.data.pos >= 0) {
+            const newResult = {
+              phrase,
+              numeric_pattern: numericPattern,
+              position: backupData.data.pos,
+              snippet: `...${backupData.data.before}[${backupData.data.match}]${backupData.data.after}...`,
+              found: true,
+              isDigitMode: digitMode
+            }
+            setResult(newResult)
+
+            // Animate result appearance
+            setTimeout(() => {
+              const resultEl = document.querySelector('.result')
+              if (resultEl) {
+                gsap.fromTo(resultEl,
+                  { opacity: 0, y: 50, scale: 0.9 },
+                  { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "back.out(1.7)" }
+                )
+              }
+            }, 100)
+          } else {
+            setResult({
+              phrase,
+              numeric_pattern: numericPattern,
+              position: -1,
+              snippet: 'Not found in the known digits of Pi',
+              found: false,
+              isDigitMode: digitMode
+            })
+          }
+        } catch (backupErr) {
+          // If backup API also fails, show not found
+          setResult({
+            phrase,
+            numeric_pattern: numericPattern,
+            position: -1,
+            snippet: 'Not found in the known digits of Pi',
+            found: false,
+            isDigitMode: digitMode
+          })
+          console.error('Backup API error:', backupErr)
+        } finally {
+          setIsDeepSearching(false)
+        }
       }
     } catch (err) {
       setError('Failed to search Pi. Please try again.')
@@ -222,11 +283,11 @@ function App() {
   const closeResult = () => {
     const resultEl = document.querySelector('.result')
     if (resultEl) {
-      gsap.to(resultEl, { 
-        opacity: 0, 
-        y: -30, 
-        scale: 0.9, 
-        duration: 0.5, 
+      gsap.to(resultEl, {
+        opacity: 0,
+        y: -30,
+        scale: 0.9,
+        duration: 0.5,
         ease: "power2.in",
         onComplete: () => setResult(null)
       })
@@ -337,7 +398,7 @@ function App() {
   /**
    * Calculate probability that a pattern is not found in first N digits of Pi
    */
-  const probabilityNotFound = (pattern: string, N: number = 1e9): number => {
+  const probabilityNotFound = (pattern: string, N: number = 1e10): number => {
     return probNotFound(pattern, N);
   }
 
@@ -363,24 +424,24 @@ function App() {
             </div>
             <h1 className="loading-title">Library of Pi</h1>
             <p className="loading-subtitle">Preparing the infinite journey through Pi...</p>
-            
+
             <div className="loading-bar-container">
-              <div 
-                className="loading-bar" 
+              <div
+                className="loading-bar"
                 style={{ width: `${Math.min(loadingProgress, 100)}%` }}
               ></div>
             </div>
             <div className="loading-percentage">{Math.floor(loadingProgress)}%</div>
-            
+
             {loadingProgress >= 100 && (
-              <button 
+              <button
                 className="start-btn cosmic-btn"
                 onClick={handleStartExperience}
               >
                 ◊ Begin Experience ◊
               </button>
             )}
-            
+
             {loadingProgress < 100 && (
               <div className="loading-hints">
                 <p>• Calculating infinite digits</p>
@@ -421,10 +482,10 @@ function App() {
               <span className="pi-symbol">π</span>
             </h1>
             <p className="subtitle">Search for words and phrases hidden in the infinite digits of Pi</p>
-            <p className="search-note">Searches up to 1 billion digits of Pi</p>
-            
+            <p className="search-note">Searches up to 10 billion digits of Pi</p>
+
             <div className="header-nav">
-              <button 
+              <button
                 onClick={() => setShowAbout(!showAbout)}
                 className="nav-btn"
               >
@@ -449,65 +510,65 @@ function App() {
                     <div className="about-section">
                       <h3>The Vision</h3>
                       <p>
-                        I'm <strong>Caleb Sakala</strong>, and I created this site after being inspired by a fascinating video about Pi. 
-                        The concept that everything that can ever be said or written is contained within Pi's infinite digits 
-                        was - and is - so captivating to me. Just the thought that this one mathematical constant holds every possible combination of numbers, which means 
+                        I'm <strong>Caleb Sakala</strong>, and I created this site after being inspired by a fascinating video about Pi.
+                        The concept that everything that can ever be said or written is contained within Pi's infinite digits
+                        was - and is - so captivating to me. Just the thought that this one mathematical constant holds every possible combination of numbers, which means
                         every book, every poem, every conversation - including this very text - I don't know how you can hear that and not be wowed. I created this site to wow people with Pi.
                       </p>
                     </div>
-                    
+
                     <div className="about-section">
                       <h3>Open Source & Free</h3>
                       <p>
-                        Library of Pi is completely <strong>free and open source</strong>. You can explore the code, contribute, 
+                        Library of Pi is completely <strong>free and open source</strong>. You can explore the code, contribute,
                         or create your own version on GitHub. Please star the repo if you find it interesting!
                       </p>
-                      <a href="https://github.com/calebsakala/libraryofpi" 
-                         target="_blank" 
-                         rel="noopener noreferrer" 
-                         className="link-btn">
+                      <a href="https://github.com/calebsakala/libraryofpi"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-btn">
                         <span>⚡</span> View on GitHub
                       </a>
                     </div>
-                    
+
                     <div className="about-section">
                       <h3>Connect</h3>
                       <p>Let's connect and discuss mathematics, programming, or the infinite beauty of Pi:</p>
                       <div className="social-links">
-                        <a href="https://linkedin.com/in/calebsakala" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           className="link-btn">
+                        <a href="https://linkedin.com/in/calebsakala"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link-btn">
                           <span>💼</span> LinkedIn
                         </a>
-                        <a href="https://x.com/bytecaleb" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           className="link-btn">
+                        <a href="https://x.com/bytecaleb"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link-btn">
                           <span>🐦</span> Twitter
                         </a>
                       </div>
                     </div>
-                    
+
                     <div className="about-section">
                       <h3>Technical Details</h3>
                       <p>
-                        <strong>Overview:</strong>  This site searches through <strong>1 billion digits of Pi</strong> using the pilookup.com API. 
-                        The visualization shows a mathematical spirograph pattern based on Pi's ratio, creating beautiful 
+                        <strong>Overview:</strong>  This site searches through <strong>10 billion digits of Pi</strong> using the pilookup.com API.
+                        The visualization shows a mathematical spirograph pattern based on Pi's ratio, creating beautiful
                         geometric art as it traces through the infinite sequence.
                       </p>
                       <p>
-                        <strong>Number-letter Mapping:</strong> To map letters to numbers, I use a simple mapping system where 
-                        A=01, B=02, C=03... Z=26. Each letter becomes a two-digit number, so "HELLO" becomes "0805121215". 
-                        This numeric sequence is then searched within Pi's digits. The reverse process converts Pi's digits 
+                        <strong>Number-letter Mapping:</strong> To map letters to numbers, I use a simple mapping system where
+                        A=01, B=02, C=03... Z=26. Each letter becomes a two-digit number, so "HELLO" becomes "0805121215".
+                        This numeric sequence is then searched within Pi's digits. The reverse process converts Pi's digits
                         back to letters, revealing the hidden words that exist within the mathematical constant.
                       </p>
                       <p>
-                        <strong>Probability Calculation:</strong> When a sequence isn't found, we calculate the probability 
-                        that it would have been discovered in the first billion digits. This uses <strong>finite state automata</strong> and <strong>Markov chain analysis</strong>. 
-                        We build a state machine that tracks partial matches of your pattern, then use matrix exponentiation 
-                        to compute the probability distribution after processing N digits. The calculation assumes Pi's digits 
-                        are statistically random (which they appear to be), where each digit 0-9 has equal probability. 
+                        <strong>Probability Calculation:</strong> When a sequence isn't found, we calculate the probability
+                        that it would have been discovered in the first billion digits. This uses <strong>finite state automata</strong> and <strong>Markov chain analysis</strong>.
+                        We build a state machine that tracks partial matches of your pattern, then use matrix exponentiation
+                        to compute the probability distribution after processing N digits. The calculation assumes Pi's digits
+                        are statistically random (which they appear to be), where each digit 0-9 has equal probability.
                         This gives us a scientifically grounded estimate of how "surprising" it is that your phrase wasn't found.
                       </p>
                     </div>
@@ -521,7 +582,7 @@ function App() {
               <div className="visualization-section">
                 <PiVisualization width={500} height={500} isVisible={true} />
               </div>
-              
+
               <div className="search-section">
                 {result ? (
                   // Result replaces the search area when there's a discovery
@@ -533,16 +594,16 @@ function App() {
                             {result.found ? (
                               <>
                                 <div className="success-icon">π</div>
-                                <span>Discovery Made!</span>
+                                <span>{digitMode ? 'Digit Discovery Made!' : 'Discovery Made!'}</span>
                               </>
                             ) : (
                               <>
                                 <div className="not-found-icon">∅</div>
-                                <span>Not Found</span>
+                                <span>{digitMode ? 'Not Found (Digits)' : 'Not Found'}</span>
                               </>
                             )}
                           </div>
-                          <button 
+                          <button
                             onClick={closeResult}
                             className="close-btn"
                             aria-label="Close result"
@@ -561,7 +622,7 @@ function App() {
                               <div className="phrase-value">{result.phrase}</div>
                               <div className="numeric-subtitle">{result.numeric_pattern}</div>
                             </div>
-                            
+
                             <div className="position-showcase">
                               <div className="position-circle">
                                 <div className="position-label">Found at Position</div>
@@ -574,30 +635,30 @@ function App() {
                             <div className="context-label">Within Pi's Infinite Sequence</div>
                             <div className="context-visual">
                               {(() => {
-                                const formatted = formatSnippetWithWords(result.snippet)
+                                const formatted = formatSnippetWithWords(result.snippet, result.isDigitMode)
                                 return (
                                   <div className="sequence-display">
                                     <div className="sequence-section">
                                       <div className="sequence-header">Before Your Discovery</div>
                                       <div className="sequence-content">
                                         <div className="numbers-line">{formatted.before.numbers}</div>
-                                        <div className="words-line">{formatted.before.words}</div>
+                                        {!result.isDigitMode && <div className="words-line">{formatted.before.words}</div>}
                                       </div>
                                     </div>
-                                    
+
                                     <div className="sequence-section match-section">
                                       <div className="sequence-header highlight">Your Match</div>
                                       <div className="sequence-content match-highlight">
                                         <div className="numbers-line match">{formatted.match.numbers}</div>
-                                        <div className="words-line match">{formatted.match.words}</div>
+                                        {!result.isDigitMode && <div className="words-line match">{formatted.match.words}</div>}
                                       </div>
                                     </div>
-                                    
+
                                     <div className="sequence-section">
                                       <div className="sequence-header">After Your Discovery</div>
                                       <div className="sequence-content">
                                         <div className="numbers-line">{formatted.after.numbers}</div>
-                                        <div className="words-line">{formatted.after.words}</div>
+                                        {!result.isDigitMode && <div className="words-line">{formatted.after.words}</div>}
                                       </div>
                                     </div>
                                   </div>
@@ -609,6 +670,25 @@ function App() {
                           {/* New search bar at the bottom of the result for continuous searching */}
                           <div className="continue-search">
                             <div className="continue-search-label">Continue Exploring Pi</div>
+                            
+                            {/* Mode toggle */}
+                            <div className="search-mode-toggle">
+                              <button
+                                onClick={() => setDigitMode(false)}
+                                disabled={loading}
+                                className={`mode-btn ${!digitMode ? 'active' : ''}`}
+                              >
+                                Words
+                              </button>
+                              <button
+                                onClick={() => setDigitMode(true)}
+                                disabled={loading}
+                                className={`mode-btn ${digitMode ? 'active' : ''}`}
+                              >
+                                Numbers
+                              </button>
+                            </div>
+
                             <div className="search-box">
                               <Input
                                 type="text"
@@ -618,7 +698,7 @@ function App() {
                                   const cleanValue = e.target.value.replace(/\s/g, '').slice(0, 20)
                                   setPhrase(cleanValue)
                                 }}
-                                placeholder="Search for another phrase..."
+                                placeholder={digitMode ? 'Enter numbers to search...' : 'Search for another phrase...'}
                                 className="cosmic-input"
                                 onKeyPress={(e) => e.key === 'Enter' && searchPi()}
                                 maxLength={20}
@@ -629,9 +709,11 @@ function App() {
                                 className="search-btn cosmic-btn"
                               >
                                 {loading ? (
-                                  <span className="loading-text">Searching Pi...</span>
+                                  <span className="loading-text">
+                                    {isDeepSearching ? 'Searching deep...' : 'Searching Pi...'}
+                                  </span>
                                 ) : (
-                                  <span>∞ Search Again</span>
+                                  <span>∞ Search Pi</span>
                                 )}
                               </Button>
                             </div>
@@ -645,11 +727,11 @@ function App() {
                               <div className="phrase-value searched">{result.phrase}</div>
                               <div className="numeric-subtitle">{result.numeric_pattern}</div>
                             </div>
-                            
+
                             <div className="not-found-message">
                               <div className="infinity-symbol">∞</div>
                               <div className="message-text">
-                                <p>There was a { ((1 - probabilityNotFound(result.numeric_pattern)) * 100).toFixed(4) }% chance of finding "{result.phrase}" in our search space. This sequence awaits discovery beyond the limits of this program.</p>
+                                <p>There was a {((1 - probabilityNotFound(result.numeric_pattern)) * 100).toFixed(4)}% chance of finding "{result.phrase}" in our search space. This sequence awaits discovery beyond the limits of this program.</p>
                                 <p className="suggestion">Try a shorter phrase or explore different words</p>
                               </div>
                             </div>
@@ -658,6 +740,25 @@ function App() {
                           {/* New search bar at the bottom for not found results too */}
                           <div className="continue-search">
                             <div className="continue-search-label">Try Another Search</div>
+                            
+                            {/* Mode toggle */}
+                            <div className="search-mode-toggle">
+                              <button
+                                onClick={() => setDigitMode(false)}
+                                disabled={loading}
+                                className={`mode-btn ${!digitMode ? 'active' : ''}`}
+                              >
+                                Words
+                              </button>
+                              <button
+                                onClick={() => setDigitMode(true)}
+                                disabled={loading}
+                                className={`mode-btn ${digitMode ? 'active' : ''}`}
+                              >
+                                Numbers
+                              </button>
+                            </div>
+
                             <div className="search-box">
                               <Input
                                 type="text"
@@ -667,7 +768,7 @@ function App() {
                                   const cleanValue = e.target.value.replace(/\s/g, '').slice(0, 20)
                                   setPhrase(cleanValue)
                                 }}
-                                placeholder="Search for another phrase..."
+                                placeholder={digitMode ? 'Enter numbers to search...' : 'Search for another phrase...'}
                                 className="cosmic-input"
                                 onKeyPress={(e) => e.key === 'Enter' && searchPi()}
                                 maxLength={20}
@@ -678,9 +779,11 @@ function App() {
                                 className="search-btn cosmic-btn"
                               >
                                 {loading ? (
-                                  <span className="loading-text">Searching Pi...</span>
+                                  <span className="loading-text">
+                                    {isDeepSearching ? 'Searching deep...' : 'Searching Pi...'}
+                                  </span>
                                 ) : (
-                                  <span>∞ Search Again</span>
+                                  <span>∞ Search Pi</span>
                                 )}
                               </Button>
                             </div>
@@ -693,6 +796,24 @@ function App() {
                   // Original search area when there's no result
                   <div className="initial-search">
                     <div className="search-container">
+                      {/* Mode toggle */}
+                      <div className="search-mode-toggle">
+                        <button
+                          onClick={() => setDigitMode(false)}
+                          disabled={loading}
+                          className={`mode-btn ${!digitMode ? 'active' : ''}`}
+                        >
+                          Words
+                        </button>
+                        <button
+                          onClick={() => setDigitMode(true)}
+                          disabled={loading}
+                          className={`mode-btn ${digitMode ? 'active' : ''}`}
+                        >
+                          Numbers
+                        </button>
+                      </div>
+
                       <div className="search-box">
                         <Input
                           type="text"
@@ -702,7 +823,7 @@ function App() {
                             const cleanValue = e.target.value.replace(/\s/g, '').slice(0, 20)
                             setPhrase(cleanValue)
                           }}
-                          placeholder="Enter a word or phrase..."
+                          placeholder={digitMode ? 'Enter numbers to search...' : 'Enter a word or phrase...'}
                           className="cosmic-input"
                           onKeyPress={(e) => e.key === 'Enter' && searchPi()}
                           maxLength={20}
@@ -713,7 +834,9 @@ function App() {
                           className="search-btn cosmic-btn"
                         >
                           {loading ? (
-                            <span className="loading-text">Searching Pi...</span>
+                            <span className="loading-text">
+                              {isDeepSearching ? 'Searching deep...' : 'Searching Pi...'}
+                            </span>
                           ) : (
                             <span>∞ Search Pi</span>
                           )}
@@ -734,7 +857,7 @@ function App() {
           )}
 
           <footer className="cosmic-footer">
-            <p>Powered by the mathematical constant π and the pilookup.com API</p>
+            <p>Powered by the mathematical constant π, <a></a>pilookup and </p>
           </footer>
         </div>
       )}

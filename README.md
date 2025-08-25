@@ -29,7 +29,7 @@ Words are converted to numbers using a simple mapping system:
 - This numeric sequence is then searched within Pi's digits
 
 ### Mathematical Search
-- Searches through over **1 billion digits of Pi** using the [pilookup.com API](https://pilookup.com)
+- Searches through over **10 billion digits of Pi** using the [pilookup.com API](https://pilookup.com)
 - Displays the exact position where your phrase appears
 - Shows surrounding context with both numeric and letter representations
 
@@ -138,7 +138,7 @@ Pi contains every possible finite sequence of digits, which means:
 - Every possible combination of letters and numbers
 - The challenge is finding them within computational limits
 
-Our search covers the first **1 billion digits**, giving us a substantial window into Pi's infinite sequence.
+Our search covers the first **10 billion digits**, giving us a substantial window into Pi's infinite sequence.
 
 ## 🤝 Contributing
 

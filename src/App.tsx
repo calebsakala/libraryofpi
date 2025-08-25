@@ -518,21 +518,7 @@ function App() {
                     </div>
 
                     <div className="about-section">
-                      <h3>Open Source & Free</h3>
-                      <p>
-                        Library of Pi is completely <strong>free and open source</strong>. You can explore the code, contribute,
-                        or create your own version on GitHub. Please star the repo if you find it interesting!
-                      </p>
-                      <a href="https://github.com/calebsakala/libraryofpi"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link-btn">
-                        <span>⚡</span> View on GitHub
-                      </a>
-                    </div>
-
-                    <div className="about-section">
-                      <h3>Connect</h3>
+                      <h3>My Social Media</h3>
                       <p>Let's connect and discuss mathematics, programming, or the infinite beauty of Pi:</p>
                       <div className="social-links">
                         <a href="https://linkedin.com/in/calebsakala"
@@ -549,6 +535,21 @@ function App() {
                         </a>
                       </div>
                     </div>
+
+                    <div className="about-section">
+                      <h3>Open Source & Free</h3>
+                      <p>
+                        Library of Pi is completely <strong>free and open source</strong>. You can explore the code, contribute,
+                        or create your own version on GitHub. Please star the repo if you find it interesting!
+                      </p>
+                      <a href="https://github.com/calebsakala/libraryofpi"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-btn">
+                        <span>⚡</span> View on GitHub
+                      </a>
+                    </div>
+
 
                     <div className="about-section">
                       <h3>Technical Details</h3>
@@ -857,7 +858,7 @@ function App() {
           )}
 
           <footer className="cosmic-footer">
-            <p>Powered by the mathematical constant π, <a></a>pilookup and </p>
+            <p>Powered by the mathematical constant π and <a href="https://pilookup.com" target='_blank'>pilookup</a>.</p>
           </footer>
         </div>
       )}

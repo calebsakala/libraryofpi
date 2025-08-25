@@ -24,8 +24,8 @@ Visit the live application: [Library of Pi](https://libraryofpi.com)
 
 ### Letter-to-Number Mapping
 Words are converted to numbers using a simple mapping system:
-- A=01, B=02, C=03... Z=26
-- "HELLO" becomes "0805121215"
+- A=00, B=01, C=04... Z=25
+- "HELLO" becomes "0704111114"
 - This numeric sequence is then searched within Pi's digits
 
 ### Mathematical Search

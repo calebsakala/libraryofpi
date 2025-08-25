@@ -33,7 +33,7 @@
     right: max(1rem, env(safe-area-inset-right, 1rem));
     transform: scale(0.6);
   }
-  
+
   .youtube-background-music:hover {
     transform: scale(0.65);
   }
@@ -45,7 +45,7 @@
     right: max(0.75rem, env(safe-area-inset-right, 0.75rem));
     transform: scale(0.5);
   }
-  
+
   .youtube-background-music:hover {
     transform: scale(0.55);
   }
@@ -1954,3 +1954,124 @@ body::before {
   }
 }
 
+/* NotFound Component Styles */
+.not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.not-found-card {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.not-found-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.not-found-message {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: rgba(244, 241, 232, 0.8);
+  margin: 2rem 0;
+  max-width: 500px;
+}
+
+.not-found-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.not-found-buttons .cosmic-btn {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .not-found-buttons {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .not-found-buttons .cosmic-btn {
+    flex: none;
+    min-width: auto;
+    max-width: 100%;
+    width: 100%;
+    padding: 1.25rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-buttons .cosmic-btn {
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .not-found-container {
+    min-height: 70vh;
+    padding: 1.5rem;
+  }
+  
+  .not-found-card {
+    padding: 2rem 1.5rem;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .not-found-message {
+    font-size: 1.125rem;
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-container {
+    min-height: 60vh;
+    padding: 1rem;
+  }
+  
+  .not-found-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .not-found-message {
+    font-size: 1rem;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  
+  .not-found-buttons {
+    margin-top: 1.5rem;
+  }
+}

@@ -573,7 +573,7 @@ function App() {
                       </p>
                       <p>
                         <strong>Number-letter Mapping:</strong> To map letters to numbers, I use a simple mapping system where
-                        A=01, B=02, C=03... Z=26. Each letter becomes a two-digit number, so "HELLO" becomes "0805121215".
+                        A=00, B=01, C=02... Z=25. Each letter becomes a two-digit number, so "HELLO" becomes "0805121215".
                         This numeric sequence is then searched within Pi's digits. The reverse process converts Pi's digits
                         back to letters, revealing the hidden words that exist within the mathematical constant.
                       </p>

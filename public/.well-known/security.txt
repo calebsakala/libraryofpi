@@ -1,0 +1,10 @@
+Contact: https://github.com/calebsakala/libraryofpi/security/advisories/new
+Contact: https://linkedin.com/in/calebsakala
+Expires: 2026-08-25T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://libraryofpi.com/.well-known/security.txt
+Policy: https://github.com/calebsakala/libraryofpi/blob/main/SECURITY.md
+
+# Thank you for helping make Library of Pi safer!
+# Please report security vulnerabilities responsibly.
+# For non-security issues, please use GitHub Issues instead.

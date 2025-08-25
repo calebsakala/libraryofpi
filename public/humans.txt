@@ -1,0 +1,33 @@
+# humanstxt.org
+
+/* TEAM */
+Creator: Caleb Sakala
+Contact: https://linkedin.com/in/calebsakala
+Twitter: @bytecaleb
+Location: Global
+
+/* THANKS */
+Pi Lookup API: pilookup.com
+React Team: reactjs.org
+GSAP Animation Library: greensock.com
+Mathematical inspiration from Pi explorers worldwide
+
+/* TECHNOLOGY */
+Framework: React 18 + TypeScript
+Build Tool: Vite
+Styling: Custom CSS with cosmic theme
+Animations: GSAP (GreenSock)
+APIs: pilookup.com, api.libraryofpi.com
+Hosting: Netlify / Vercel
+
+/* SITE */
+Last update: 2025/08/25
+Language: English
+Standards: HTML5, CSS3, ES2020+
+Components: Custom UI with shadcn/ui base
+Software: VS Code, Git
+
+/* INSPIRATION */
+"In the digits of Pi, every story has already been written, 
+every equation already solved, every dream already dreamed. 
+We're just archaeologists of the infinite, uncovering what was always there."

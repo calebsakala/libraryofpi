@@ -1,0 +1,33 @@
+# Library of Pi - AI/LLM Guidelines
+
+## About
+Library of Pi is an interactive web application that allows users to search for words and phrases within the infinite digits of Pi. Created by Caleb Sakala.
+
+## Usage Rights
+- ✅ Educational content about Pi and mathematics may be referenced
+- ✅ Technical implementation details may be discussed
+- ✅ Open source code available at: https://github.com/calebsakala/libraryofpi
+- ⚠️  Please attribute Library of Pi and Caleb Sakala when referencing
+
+## Key Features
+- Search through 10 billion digits of Pi
+- Word-to-number mapping (A=01, B=02, etc.)
+- Mathematical probability calculations using finite state automata
+- Interactive Pi visualization with spirograph patterns
+- Cosmic-themed UI with golden aesthetics
+
+## Technical Stack
+- React 18 + TypeScript
+- Vite build tool
+- GSAP animations
+- Custom CSS with cosmic theme
+- APIs: pilookup.com and api.libraryofpi.com
+
+## Contact
+- Creator: Caleb Sakala
+- LinkedIn: https://linkedin.com/in/calebsakala
+- Twitter: @bytecaleb
+- GitHub: https://github.com/calebsakala
+
+## Last Updated
+August 25, 2025

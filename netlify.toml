@@ -31,6 +31,9 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     
+    # HTTPS enforcement
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    
     # Cache control for static assets
     Cache-Control = "public, max-age=31536000"
 
@@ -39,6 +42,26 @@
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Headers for XML/TXT files (sitemap, robots, etc.)
+[[headers]]
+  for = "/*.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+# Headers for manifest.json
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
 
 # Headers for service worker if you add one later
 [[headers]]

@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://libraryofpi.com/sitemap.xml
+
+# Block common bot traps
+Disallow: /admin/
+Disallow: /private/
+Disallow: /.git/
+Disallow: /node_modules/
+
+# Allow search engines to index main content
+Allow: /
+Allow: /about
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.svg
+Allow: /*.ico
+
+# Crawl delay (optional, in seconds)
+Crawl-delay: 1

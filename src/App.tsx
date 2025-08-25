@@ -510,10 +510,9 @@ function App() {
                     <div className="about-section">
                       <h3>The Vision</h3>
                       <p>
-                        I'm <strong>Caleb Sakala</strong>, and I created this site after being inspired by a fascinating video about Pi.
+                        I'm <strong>Caleb Sakala</strong>, and I created this site after being inspired by a scene from the movie "Person of Interest".
                         The concept that everything that can ever be said or written is contained within Pi's infinite digits
-                        was - and is - so captivating to me. Just the thought that this one mathematical constant holds every possible combination of numbers, which means
-                        every book, every poem, every conversation - including this very text - I don't know how you can hear that and not be wowed. I created this site to wow people with Pi.
+                        is so captivating to me that I had to test it out. Not to mention, the greatest website in human history, in my eyes, is <a href="https://libraryofbabel.info/" target="_blank" rel="noopener noreferrer">The Library of Babel</a> by Jonathan Basile. When I heard of the infinite nature of pi, it immediately took me back to my first experience with The Library of Babel. I created this site to wow people with the nature of pi just like The Library of Babel wowed me.
                       </p>
                     </div>
 

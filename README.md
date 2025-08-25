@@ -29,7 +29,7 @@ Words are converted to numbers using a simple mapping system:
 - This numeric sequence is then searched within Pi's digits
 
 ### Mathematical Search
-- Searches through over **10 billion digits of Pi** using the [pilookup.com API](https://pilookup.com)
+- Searches through over **10 billion digits of Pi** using the [pilookup.com API](https://pilookup.com) and a Go API hosted on AWS EC2.
 - Displays the exact position where your phrase appears
 - Shows surrounding context with both numeric and letter representations
 

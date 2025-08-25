@@ -567,7 +567,7 @@ function App() {
                     <div className="about-section">
                       <h3>Technical Details</h3>
                       <p>
-                        <strong>Overview:</strong>  This site searches through <strong>10 billion digits of Pi</strong> using the pilookup.com API.
+                        <strong>Overview:</strong>  This site searches through <strong>10 billion digits of Pi</strong> using the pilookup API for the first 1 billion digits and a lightweight Go API hosted on AWS for the remaining 9 billion.
                         The visualization shows a mathematical spirograph pattern based on Pi's ratio, creating beautiful
                         geometric art as it traces through the infinite sequence.
                       </p>

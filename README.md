@@ -22,10 +22,12 @@ Visit the live application: [Library of Pi](https://libraryofpi.com)
 
 ## 🧮 How It Works
 
+
 ### Letter-to-Number Mapping
-Words are converted to numbers using a simple mapping system:
-- A=00, B=01, C=04... Z=25
-- "HELLO" becomes "0704111114"
+Words are converted to numbers using a custom mapping table with **100 unique characters** (including Latin, Turkish, accented, and select Greek letters):
+- Each character is assigned a two-digit code from 00 to 99
+- For example: A=00, Á=01, Ç=12, İ=34, Ö=58, Ş=72, Ψ=99
+- "ÇAĞRI" becomes "1204311734"
 - This numeric sequence is then searched within Pi's digits
 
 ### Mathematical Search

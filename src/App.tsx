@@ -216,9 +216,46 @@ function App() {
       // Digits mode: only allow numeric characters (0-9)
       cleanValue = cleanValue.replace(/[^0-9]/g, '')
     } else {
-  // Words mode: allow Unicode letters (all languages)
-  // keep only Unicode letter characters
-  cleanValue = cleanValue.replace(/[^\p{L}]/gu, '')
+      // Words mode: only allow characters that exist in our LETTERS mapping (including lower/upper variants)
+      const LETTERS = [
+        'A','Á','À','Â','Ä','Ã','Ā','Å','Æ','Ǽ',
+        'B','C','Ç','Č','Ć','Ĉ',
+        'D','Đ','Ð',
+        'E','É','È','Ê','Ë','Ē','Ė','Ę',
+        'F','G','Ġ','Ĝ','Ğ',
+        'H','I','İ','Í','Ì','Î','Ï','Ī',
+        'J','K','Ķ',
+        'L','Ł','Ĺ','Ļ','Ľ',
+        'M','N','Ñ','Ń','Ň','Ŋ',
+        'O','Ó','Ò','Ô','Ö','Õ','Ō','Ø','Œ',
+        'P','Q','R','Ŕ','Ř',
+        'S','Ś','Š','Ş','T','Ť','Þ',
+        'U','Ú','Ù','Û','Ü','Ū','Ů','Ų',
+        'W','Ŵ','X','Y','Ý','Ÿ','Z','Ż','Ž',
+        'Γ','Δ','Λ','Π','Σ','Θ','Ω','Ψ'
+      ].slice(0, 100)
+
+      const allowed = new Set<string>()
+      for (const ch of LETTERS) {
+        allowed.add(ch)
+        allowed.add(ch.toLowerCase())
+      }
+
+      const isAllowed = (ch: string) => {
+        if (allowed.has(ch)) return true
+        // try normalized base character (remove diacritics)
+        try {
+          const base = ch.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+          if (allowed.has(base)) return true
+          if (allowed.has(base.toUpperCase())) return true
+        } catch (e) {
+          // ignore
+        }
+        return false
+      }
+
+      // Filter input to only allowed characters while preserving order
+      cleanValue = Array.from(cleanValue).filter(ch => isAllowed(ch)).join('')
     }
 
     setPhrase(cleanValue)
@@ -622,10 +659,9 @@ function App() {
                         geometric art as it traces through the infinite sequence.
                       </p>
                       <p>
-                        <strong>Number-letter Mapping:</strong> To map letters to numbers, I use a simple mapping system where
-                        A=00, B=01, C=02... Z=25. Each letter becomes a two-digit number, so "HELLO" becomes "0805121215".
-                        This numeric sequence is then searched within Pi's digits. The reverse process converts Pi's digits
-                        back to letters, revealing the hidden words that exist within the mathematical constant.
+                        <strong>Number-letter Mapping:</strong> To map letters to numbers, I use a custom mapping table with <strong>100 unique characters</strong> (including Latin, Turkish, accented, and select Greek letters). Each character is assigned a two-digit code from 00 to 99.<br /><br />
+                        For example: A=00, Á=01, Ç=12, İ=34, Ö=58, Ş=72, and Ψ=99. Each letter in your phrase is converted to its corresponding two-digit number, so a phrase like "ÇAĞRI" becomes "1204311734".<br /><br />
+                        This numeric sequence is then searched within Pi's digits. The reverse process converts Pi's digits back to letters using the same mapping, revealing the hidden words that exist within the mathematical constant.
                       </p>
                       <p>
                         <strong>Probability Calculation:</strong> When a sequence isn't found, we calculate the probability

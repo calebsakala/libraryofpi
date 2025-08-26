@@ -106,23 +106,38 @@ function App() {
   }
 
   const numbersToWords = (numbers: string): string => {
-    const numberMap: { [key: string]: string } = {
-      '00': 'A', '01': 'B', '02': 'C', '03': 'D', '04': 'E', '05': 'F', '06': 'G', '07': 'H', '08': 'I',
-      '09': 'J', '10': 'K', '11': 'L', '12': 'M', '13': 'N', '14': 'O', '15': 'P', '16': 'Q',
-      '17': 'R', '18': 'S', '19': 'T', '20': 'U', '21': 'V', '22': 'W', '23': 'X', '24': 'Y', '25': 'Z'
-    }
+    // A 100-entry table mapping 00..99 -> single characters (Latin extended + Turkish + common accents + selected Greek)
+    const LETTERS = [
+      'A','Á','À','Â','Ä','Ã','Ā','Å','Æ','Ǽ', // 00-09 (A variants)
+      'B','C','Ç','Č','Ć','Ĉ',               // 10-15
+      'D','Đ','Ð',                           // 16-18
+      'E','É','È','Ê','Ë','Ē','Ė','Ę',       // 19-26
+      'F','G','Ġ','Ĝ','Ğ',                   // 27-31
+      'H','I','İ','Í','Ì','Î','Ï','Ī',       // 32-39 (includes Turkish İ)
+      'J','K','Ķ',                           // 40-42
+      'L','Ł','Ĺ','Ļ','Ľ',                   // 43-47
+      'M','N','Ñ','Ń','Ň','Ŋ',               // 48-53
+      'O','Ó','Ò','Ô','Ö','Õ','Ō','Ø','Œ',   // 54-62
+      'P','Q','R','Ŕ','Ř',                   // 63-67
+      'S','Ś','Š','Ş','T','Ť','Þ',           // 68-74
+      'U','Ú','Ù','Û','Ü','Ū','Ů','Ų',       // 75-82
+  'W','Ŵ','X','Y','Ý','Ÿ','Z','Ż','Ž',   // 83-91
+  // Greek capital letters (remove alpha and beta for mapping)
+  'Γ','Δ','Λ','Π','Σ','Θ','Ω','Ψ' // 92-99
+    ]
 
-    // Try to parse as pairs of digits
+    // Ensure array has at least 100 entries; if longer, trim to 100
+    const table = LETTERS.slice(0, 100)
+
     let result = ''
     for (let i = 0; i < numbers.length; i += 2) {
-      const pair = numbers.slice(i, i + 2)
-      if (numberMap[pair]) {
-        result += numberMap[pair]
-      } else if (pair.length === 1) {
-        // Handle single digit at the end
-        const paddedPair = '0' + pair
-        result += numberMap[paddedPair] || pair
+      let pair = numbers.slice(i, i + 2)
+      if (pair.length === 1) pair = '0' + pair
+      const idx = parseInt(pair, 10)
+      if (!Number.isNaN(idx) && idx >= 0 && idx < table.length) {
+        result += table[idx]
       } else {
+        // if out of range, preserve numeric pair
         result += pair
       }
     }
@@ -151,13 +166,47 @@ function App() {
   }
 
   const phraseToDigits = (phrase: string): string => {
-    return phrase.toUpperCase().split('').map(char => {
-      if (char >= 'A' && char <= 'Z') {
-        const num = char.charCodeAt(0) - 65
-        return num.toString().padStart(2, '0')
+    // Build the same 100-entry LETTERS table and a reverse lookup
+    const LETTERS = [
+      'A','Á','À','Â','Ä','Ã','Ā','Å','Æ','Ǽ',
+      'B','C','Ç','Č','Ć','Ĉ',
+      'D','Đ','Ð',
+      'E','É','È','Ê','Ë','Ē','Ė','Ę',
+      'F','G','Ġ','Ĝ','Ğ',
+      'H','I','İ','Í','Ì','Î','Ï','Ī',
+      'J','K','Ķ',
+      'L','Ł','Ĺ','Ļ','Ľ',
+      'M','N','Ñ','Ń','Ň','Ŋ',
+      'O','Ó','Ò','Ô','Ö','Õ','Ō','Ø','Œ',
+      'P','Q','R','Ŕ','Ř',
+      'S','Ś','Š','Ş','T','Ť','Þ',
+      'U','Ú','Ù','Û','Ü','Ū','Ů','Ų',
+  'W','Ŵ','X','Y','Ý','Ÿ','Z','Ż','Ž',
+  'Γ','Δ','Λ','Π','Σ','Θ','Ω','Ψ'
+    ].slice(0, 100)
+
+    const reverse: Record<string, string> = {}
+    for (let i = 0; i < LETTERS.length; i++) {
+      reverse[LETTERS[i]] = i.toString().padStart(2, '0')
+    }
+
+    // Helper to normalize and attempt mapping
+    const mapChar = (ch: string) => {
+      if (!ch) return ''
+      const up = ch.toUpperCase()
+      // direct match
+      if (reverse[up]) return reverse[up]
+      // attempt to remove diacritics and match base letter
+      try {
+        const base = up.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+        if (reverse[base]) return reverse[base]
+      } catch (e) {
+        // ignore normalization errors
       }
       return ''
-    }).join('')
+    }
+
+    return phrase.split('').map(c => mapChar(c)).join('')
   }
 
   const handleInputChange = (value: string) => {
@@ -167,8 +216,9 @@ function App() {
       // Digits mode: only allow numeric characters (0-9)
       cleanValue = cleanValue.replace(/[^0-9]/g, '')
     } else {
-      // Words mode: only allow letters (A-Z, a-z)
-      cleanValue = cleanValue.replace(/[^A-Za-z]/g, '')
+  // Words mode: allow Unicode letters (all languages)
+  // keep only Unicode letter characters
+  cleanValue = cleanValue.replace(/[^\p{L}]/gu, '')
     }
 
     setPhrase(cleanValue)
